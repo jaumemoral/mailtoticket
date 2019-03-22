@@ -7,7 +7,7 @@ import correu
 import sys
 import getopt
 import logging
-from StringIO import StringIO
+from io import StringIO
 
 logger = logging.getLogger()
 
@@ -19,7 +19,8 @@ UNKNOWN = "UNKNOWN"
 
 
 def codi_sortida(estat):
-    return (0 if estat == SUCCESS or estat == SKIP else 1)
+    return 0 if estat == SUCCESS or estat == SKIP else 1
+
 
 if __name__ == '__main__':
     a = None
@@ -68,7 +69,7 @@ if __name__ == '__main__':
         )
     finally:
         mail.msg['X-Mailtoticket'] = estat
-        print mail
+        print(mail)
         logger.info("-----------------------------------------------------")
         if not tractat and settings.get("notificar_errors"):
             correu.enviar(buffer_logs.getvalue(), mail.msg)

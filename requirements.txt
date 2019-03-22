@@ -1,6 +1,6 @@
 beautifulsoup4
 bleach
 mock>=1.3.0
-suds
+suds-jurko
 discover
 freezegun

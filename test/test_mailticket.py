@@ -2,9 +2,9 @@ import unittest
 import settings
 import datetime
 from mailticket import MailTicket
-from testhelper import llegir_mail
+from test.testhelper import llegir_mail
 from freezegun import freeze_time
-from cStringIO import StringIO
+from io import StringIO
 
 
 class TestMailTicket(unittest.TestCase):
@@ -39,7 +39,7 @@ class TestMailTicket(unittest.TestCase):
     def test_get_body_buit(self):
         mail_buit = llegir_mail("mailbuit.txt")
         body = mail_buit.get_body()
-        self.assertEquals("", body)
+        self.assertEqual("", body)
 
     def test_get_auto_submitted(self):
         mail_buit = llegir_mail("mailbuit.txt")
@@ -54,12 +54,12 @@ class TestMailTicket(unittest.TestCase):
         apple_mail = MailTicket(StringIO(data))
 
         dt = apple_mail.get_date()
-        self.assertEquals("11/09/2015 11:45", dt.strftime("%d/%m/%Y %H:%M"))
+        self.assertEqual("11/09/2015 11:45", dt.strftime("%d/%m/%Y %H:%M"))
 
     def test_encoding_xungo(self):
         mail = llegir_mail("encoding-xungo.txt")
         body = mail.get_body()
-        self.assertNotEquals("", body)
+        self.assertNotEqual("", body)
 
     def test_mail_sempre_ticket(self):
         settings.set("mails_sempre_ticket", ["mail.concret@example.com"])
@@ -67,11 +67,11 @@ class TestMailTicket(unittest.TestCase):
         self.assertTrue(mail_auto.comprova_mails_sempre_ticket())
 
     def test_mail_cc(self):
-        self.assertEquals(["bar@example.com","jar@example.com"],self.mail.get_cc())
+        self.assertEqual(["bar@example.com","jar@example.com"],self.mail.get_cc())
 
     def test_mail_cc_buit(self):
         mail_sense_cc = llegir_mail("mailauto.txt")
-        self.assertEquals([],mail_sense_cc.get_cc())
+        self.assertEqual([],mail_sense_cc.get_cc())
 
 
 if __name__ == '__main__':

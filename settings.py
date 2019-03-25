@@ -6,7 +6,7 @@ Abans d'accedir podem carregar la configuracio o agafara la per defecte
 
 def load(module="settings_default"):
     global settings
-    m = __import__(module, "settings")
+    m = __import__(module, ".settings")
     settings = m.settings
 
 

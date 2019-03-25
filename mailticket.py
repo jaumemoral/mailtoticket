@@ -4,7 +4,7 @@ import email
 import hashlib
 import base64
 import re
-from email.header import decode_header
+from email.header import decode_header,make_header
 from email.utils import parseaddr, getaddresses
 from email.utils import parsedate_tz, mktime_tz
 import datetime
@@ -88,8 +88,7 @@ class MailTicket:
             return
 
         fragments = decode_header(subject)
-        resultat = u" ".join(map(lambda s: str(s[0], s[1] or "ascii"),
-                                 fragments))
+        resultat=str(make_header(fragments))
 
         self.subject = resultat.replace('\n', ' ').replace('\r', '')
 
@@ -156,7 +155,7 @@ class MailTicket:
         return self.subject
 
     def get_subject_ascii(self):
-        return self.get_subject().encode('ascii', 'ignore')
+        return str(self.get_subject().encode('ascii', 'ignore'))
 
     def get_body(self):
         if self.body is None:

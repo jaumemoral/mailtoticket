@@ -57,6 +57,7 @@ class MailTicket:
                     break
 
     def codifica(self, part):
+        return part.get_payload()
         try:
             if part.get_content_charset() is not None:
                 s = str(part.get_payload(decode=True),

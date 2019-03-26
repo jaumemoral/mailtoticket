@@ -1,0 +1,13 @@
+To: test@example.com
+From: test@example.com
+Subject: =?UTF-8?B?cHJvdmEgYWNjZW50cyDDoMOp?=
+Message-ID: <3071c313-7733-3933-00f9-7332804asfasdf>
+Date: Mon, 25 Mar 2019 17:33:08 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.3
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+
+áccents vàris

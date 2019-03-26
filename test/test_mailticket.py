@@ -73,11 +73,5 @@ class TestMailTicket(unittest.TestCase):
         mail_sense_cc = llegir_mail("mailauto.txt")
         self.assertEqual([],mail_sense_cc.get_cc())
 
-    def test_mail_accents(self):
-        mail = llegir_mail("accents.txt")
-        print(mail.get_body())
-        self.assertTrue("áccents vàris" in mail.get_body())
-
-
 if __name__ == '__main__':
     unittest.main()

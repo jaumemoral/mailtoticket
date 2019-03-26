@@ -24,6 +24,15 @@ class TestNeteja(unittest.TestCase):
         html = msg.get_body()
         net = netejahtml.neteja_nou(html)
         self.assertFalse("supportList" in net)
+        
+    def test_mail_accents(self):
+        msg = llegir_mail("accents.txt")
+        html = msg.get_body()
+        net = netejahtml.neteja_nou(html)
+        print(html)
+        print(net)
+        self.assertTrue("áccents vàris" in net)
+        
 
 if __name__ == '__main__':
     unittest.main()

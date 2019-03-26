@@ -58,23 +58,6 @@ class MailTicket:
 
     def codifica(self, part):
         return part.get_payload()
-        try:
-            if part.get_content_charset() is not None:
-                s = str(part.get_payload(decode=True),
-                            part.get_content_charset(), "ignore")
-            else:
-                s = str(part.get_payload(decode=True))
-        except:
-            # Tenim problemes per convertir, aixi que fem el que podem
-            s = part.get_payload()
-
-        # Aixo es perque pot haver-hi caracters no imprimibles que s'han de
-        # filtrar. Nomes admetem els salts de linia, tabuladors i a partir
-        # del 32.
-        return "".join(
-            [x if ord(x) == 9 or ord(x) == 10 or ord(x) == 13 or ord(x) >= 32
-                else '' for x in s]
-        )
 
     def nomes_ascii(self, s):
         return "".join(

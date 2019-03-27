@@ -57,7 +57,10 @@ class MailTicket:
                     break
 
     def codifica(self, part):
-        return part.get_payload()
+        if part.get("Content-Transfer-Encoding") in ['quoted-printable','base64']:
+          return part.get_payload(decode=True).decode(part.get_content_charset())
+        else:
+          return part.get_payload()
 
     def nomes_ascii(self, s):
         return "".join(
@@ -205,7 +208,7 @@ class MailTicket:
         for item in llista:
             # Considera una regex si comença amb circumflex
             regex = item if item[0] is '^' else '^' + re.escape(item) + '$'
-            if re.compile(regex, re.UNICODE).match(self.get_from()):
+            if re.compile(regex).match(self.get_from()):
                 return True
 
         return False

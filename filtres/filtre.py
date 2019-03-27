@@ -47,7 +47,7 @@ class Filtre(object):
         if attachment['Content-Transfer-Encoding'] == 'base64':
             return attachment.get_payload()
         else:
-            return base64.b64encode(attachment.get_payload())
+            return base64.b64encode(str.encode(attachment.get_payload()))
 
     def afegir_attachments_canviant_body(self, ticket_id, username, body):
         (cids, ids) = self.afegir_attachments(ticket_id, username)

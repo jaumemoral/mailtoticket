@@ -12,6 +12,7 @@ class FiltreNou(Filtre):
 
     solicitant = None
     ticket_id = None
+    enviar_missatge_creacio = 'S'
 
     def es_aplicable(self):
         logger.info("Filtre de Nou")
@@ -22,7 +23,10 @@ class FiltreNou(Filtre):
         return self.solicitant is not None
 
     def obtenir_parametres_addicionals(self):
-        defaults = {"equipResolutor": settings.get("equip_resolutor_nous")}
+        defaults = {
+                    "equipResolutor": settings.get("equip_resolutor_nous"),
+                    "enviarMissatgeCreacio": self.enviar_missatge_creacio
+                    }
         for item in settings.get("valors_defecte"):
             regex = re.compile(item['match'], re.IGNORECASE)
             for header_name in item['order']:

@@ -11,6 +11,7 @@ import os
 settings = {
 
     # Usuaris SOA i GN6
+    "identitat_digital_apikey":"xxxx",
     "username_soa": "xxx",
     "password_soa": "xxx",
     "username_gn6": "xxx",

@@ -42,11 +42,8 @@ class GestioIdentitat:
             # Pot ser que un usuari d'un departament no tingui a identitat
             # digital un mail del tipus @upc.edu, aixi que primer comprovem
             # si la part esquerra del mail correspon a un usuari UPC real
-            print(mail)
             if "@upc.edu" in mail:
                 cn = mail.split("@")[0]
-                print(cn)
-                print(self.token)
                 dades_persona=requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/identitats?cn=" + cn,
                                headers={'TOKEN':self.token}).json()
                 if len(dades_persona['identitats'])==1:
@@ -56,7 +53,6 @@ class GestioIdentitat:
             # busquem a partir del mail qui pot ser
             cns = requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/identitats/cn?email=" + mail,
                                headers={'TOKEN':self.token}).json()
-            print(cns)
             if len(cns) == 1:
                 # Quan tenim un resultat, es aquest
                 return cns[0]
@@ -64,16 +60,11 @@ class GestioIdentitat:
                 # Si tenim mes d'un, busquem el que te el mail que busquem
                 # com a preferent o be retornem el primer
                 for cn in cns:
-                    print(cn)
                     dades_persona=requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/identitats?cn=" + cn,
                                headers={'TOKEN':self.token}).json()
-                    print(dades_persona)
-                    emailPreferent = getattr(
-                        dades_persona,
-                        'emailPreferent',
-                        None)
-                    if (self.canonicalitzar_mail(emailPreferent) == mail):
-                        return cn
+                    for identitat in dades_persona['identitats']:
+                      if (self.canonicalitzar_mail(identitat['emailPreferent']) == mail):
+                          return identitat['commonName']
 
                 return None
         except:

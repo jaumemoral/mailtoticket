@@ -21,6 +21,9 @@ class FiltreNou(Filtre):
 
         logger.info("UID del solicitant: %s" % self.solicitant)
         return self.solicitant is not None
+      
+    def cal_afegir_solicitants_addicionals(self):
+        return "+cc" in self.msg.get_to() 
 
     def obtenir_parametres_addicionals(self):
         defaults = {
@@ -115,16 +118,13 @@ class FiltreNou(Filtre):
         else:
             logger.info("Mail modificat a %s" % self.msg.get_from())
             
-        for uid in self.get_uid_addicionals():
-          resultat = self.tickets.afegir_solicitant_tiquet(
-            codiTiquet=ticket_id,
-            solicitant=uid
-           )
-
-          if SOAService.resultat_erroni(resultat):
-            logger.info("Error: %s - %s" % (
-                resultat['codiRetorn'],
-                resultat['descripcioError']
-            ))        
-
+        if self.cal_afegir_solicitants_addicionals():
+            for uid in self.get_uid_addicionals():
+                resultat = self.tickets.afegir_solicitant_tiquet(
+                                                                 codiTiquet=ticket_id,
+                                                                 solicitant=uid)
+                if SOAService.resultat_erroni(resultat):
+                    logger.info("Error: %s - %s" % (
+                                                    resultat['codiRetorn'],
+                                                    resultat['descripcioError']))        
         return True

@@ -43,29 +43,35 @@ class GestioIdentitat:
             # digital un mail del tipus @upc.edu, aixi que primer comprovem
             # si la part esquerra del mail correspon a un usuari UPC real
             if "@upc.edu" in mail:
+              try:
                 cn = mail.split("@")[0]
-                dades_persona=requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/identitats?cn=" + cn,
+                print(cn)
+                dades_persona=requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/persones/"+cn+"/cn",
                                headers={'TOKEN':self.token}).json()
-                if len(dades_persona['identitats'])==1:
-                    return cn
+                return cn
+              except:
+                None
 
             # Si no hi ha correspondencia directa amb un usuari UPC
             # busquem a partir del mail qui pot ser
             cns = requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/identitats/cn?email=" + mail,
                                headers={'TOKEN':self.token}).json()
+            print(cns)
             if len(cns) == 1:
                 # Quan tenim un resultat, es aquest
                 return cns[0]
             else:
                 # Si tenim mes d'un, busquem el que te el mail que busquem
                 # com a preferent o be retornem el primer
+                print(cns)
                 for cn in cns:
-                    dades_persona=requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/identitats?cn=" + cn,
-                               headers={'TOKEN':self.token}).json()
-                    for identitat in dades_persona['identitats']:
-                      if (self.canonicalitzar_mail(identitat['emailPreferent']) == mail):
-                          return identitat['commonName']
-
+                    try:
+                      dades_persona=requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/persones/"+cn+"/cn",
+                                 headers={'TOKEN':self.token}).json()
+                      if (self.canonicalitzar_mail(dades_persona['emailPreferent']) == mail):
+                            return dades_persona['commonName']
+                    except:
+                      None
                 return None
         except:
             return None

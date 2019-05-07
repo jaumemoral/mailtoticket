@@ -45,7 +45,6 @@ class GestioIdentitat:
             if "@upc.edu" in mail:
               try:
                 cn = mail.split("@")[0]
-                print(cn)
                 dades_persona=requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/persones/"+cn+"/cn",
                                headers={'TOKEN':self.token}).json()
                 return cn
@@ -56,14 +55,12 @@ class GestioIdentitat:
             # busquem a partir del mail qui pot ser
             cns = requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/identitats/cn?email=" + mail,
                                headers={'TOKEN':self.token}).json()
-            print(cns)
             if len(cns) == 1:
                 # Quan tenim un resultat, es aquest
                 return cns[0]
             else:
                 # Si tenim mes d'un, busquem el que te el mail que busquem
                 # com a preferent o be retornem el primer
-                print(cns)
                 for cn in cns:
                     try:
                       dades_persona=requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/persones/"+cn+"/cn",

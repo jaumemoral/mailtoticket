@@ -25,7 +25,7 @@ class MailTicket:
         self.mails_no_ticket = settings.get("mails_no_ticket") or []
         self.mails_sempre_ticket = settings.get("mails_sempre_ticket") or []
 
-        self.msg = email.message_from_file(fitxer)
+        self.msg = email.message_from_binary_file(fitxer)
         # Farem lazy initialization d'aquestes 2 properties per si hi ha
         # algun error
         self.body = None

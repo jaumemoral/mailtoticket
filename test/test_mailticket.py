@@ -4,7 +4,7 @@ import datetime
 from mailticket import MailTicket
 from test.testhelper import llegir_mail
 from freezegun import freeze_time
-from io import StringIO
+from io import BytesIO
 
 
 class TestMailTicket(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestMailTicket(unittest.TestCase):
         data = "From: foo@example.com\n" \
                "Cc: Bar <bar@example.com>, Jar <jar@example.com>\n" \
                "Date: Tue, 28 Sep 2016 10:24:09 +0200 (CEST)\n\n"
-        self.mail = MailTicket(StringIO(data))
+        self.mail = MailTicket(BytesIO(data.encode()))
 
     def test_mails_no_ticket_0001(self):
         self.mail.mails_no_ticket = ["foo@example.com"]
@@ -51,7 +51,7 @@ class TestMailTicket(unittest.TestCase):
     def test_get_date_invalid_format(self):
         # Un missatge amb la data en format "Apple Mail"
         data = "Date: 9/23/2016 11:04:10 AM\n\n"
-        apple_mail = MailTicket(StringIO(data))
+        apple_mail = MailTicket(BytesIO(data.encode()))
 
         dt = apple_mail.get_date()
         self.assertEqual("11/09/2015 11:45", dt.strftime("%d/%m/%Y %H:%M"))

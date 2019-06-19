@@ -88,17 +88,17 @@ class MailTicket:
         else:
             return self.msg[header]
 
-    def get_email_header(self, header):
-        email = parseaddr(self.msg[header])[1]
-        if len(email) == 0:
-            return None
-
-        return email.lower()
-
     def get_email_header_multiple(self, header):
         tuples = getaddresses(self.msg.get_all(header,[]))
         emails= [t[1].lower() for t in tuples if len(t[1])>0]
         return emails
+
+    def get_email_header(self, header):
+        emails=self.get_email_header_multiple(header)
+        if len(emails) == 0:
+            return None
+        else:
+            return ','.join(emails)
 
     def get_from(self):
         return self.get_email_header('From')

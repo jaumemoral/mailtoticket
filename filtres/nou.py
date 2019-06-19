@@ -34,7 +34,7 @@ class FiltreNou(Filtre):
             regex = re.compile(item['match'], re.IGNORECASE)
             for header_name in item['order']:
                 header_value = self.msg.get_header(header_name)
-                if type(header_value) == list():
+                if isinstance(header_value, (list,)):
                   values=header_value
                 else:
                   values=[header_value]

@@ -6,13 +6,14 @@ import requests
 class GestioIdentitat:
 
     def __init__(self):
+        self.url="https://identitatdigital.upc.edu/gcontrol/rest"
         self.token=self.get_token()
         self.identitat_local = GestioIdentitatLocal()
 
     def get_token(self):
         try:
-          resposta = requests.post("https://identitatdigital.upc.edu/gcontrol/rest/acls/processos", 
-                                   data={'idProces':settings.get("identitat_digital_apikey")})          
+          resposta = requests.post(self.url+"/acls/processos",
+                                   data={'idProces':settings.get("identitat_digital_apikey")})
           token=resposta.json()['tokenAcl']
           return token
         except:
@@ -45,7 +46,7 @@ class GestioIdentitat:
             if "@upc.edu" in mail:
               try:
                 cn = mail.split("@")[0]
-                dades_persona=requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/persones/"+cn+"/cn",
+                dades_persona=requests.get(self.url+"/externs/persones/"+cn+"/cn",
                                headers={'TOKEN':self.token}).json()
                 return cn
               except:
@@ -53,7 +54,7 @@ class GestioIdentitat:
 
             # Si no hi ha correspondencia directa amb un usuari UPC
             # busquem a partir del mail qui pot ser
-            cns = requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/identitats/cn?email=" + mail,
+            cns = requests.get(self.url+"/externs/identitats/cn?email=" + mail,
                                headers={'TOKEN':self.token}).json()
             if len(cns) == 1:
                 # Quan tenim un resultat, es aquest
@@ -63,7 +64,7 @@ class GestioIdentitat:
                 # com a preferent o be retornem el primer
                 for cn in cns:
                     try:
-                      dades_persona=requests.get("https://identitatdigital.upc.edu/gcontrol/rest/externs/persones/"+cn+"/cn",
+                      dades_persona=requests.get(self.url+"/externs/persones/"+cn+"/cn",
                                  headers={'TOKEN':self.token}).json()
                       if (self.canonicalitzar_mail(dades_persona['emailPreferent']) == mail):
                             return dades_persona['commonName']

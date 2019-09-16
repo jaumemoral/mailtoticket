@@ -46,7 +46,7 @@ class GestioIdentitat:
             if "@upc.edu" in mail:
               try:
                 cn = mail.split("@")[0]
-                dades_persona=requests.get(self.url+"/externs/persones/"+cn+"/cn",
+                dades_persona=requests.get(self.url+"/externs/identitats?cn="+cn,
                                headers={'TOKEN':self.token}).json()
                 return cn
               except:

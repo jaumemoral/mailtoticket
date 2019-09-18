@@ -25,25 +25,30 @@ class FiltreNou(Filtre):
     def cal_afegir_solicitants_addicionals(self):
         return "+cc" in self.msg.get_to() 
 
+    def actualitzar_parametres_addicionals(self,parametres_addicionals,valors_defecte,header_a_mirar=None):
+        for item in valors_defecte:
+            regex = re.compile(item['match'], re.IGNORECASE)
+            for header_name in item['order']:
+                if header_a_mirar==None or header_a_mirar==header_name:
+                    header_value = self.msg.get_header(header_name)
+                    if isinstance(header_value, (list,)):
+                      values=header_value
+                    else:
+                      values=[header_value]
+                    for value in values:
+                      if value and regex.match(value):
+                          logger.info("Tinc parametres adicionals via %s"
+                                      % header_name)
+                          parametres_addicionals.update(item['defaults'])
+
     def obtenir_parametres_addicionals(self):
         defaults = {
                     "equipResolutor": settings.get("equip_resolutor_nous"),
                     "enviarMissatgeCreacio": self.enviar_missatge_creacio
                     }
-        for item in settings.get("valors_defecte"):
-            regex = re.compile(item['match'], re.IGNORECASE)
-            for header_name in item['order']:
-                header_value = self.msg.get_header(header_name)
-                if isinstance(header_value, (list,)):
-                  values=header_value
-                else:
-                  values=[header_value]
-                for value in values:
-                  if value and regex.match(value):
-                      logger.info("Tinc parametres adicionals via %s"
-                                  % header_name)
-                      defaults.update(item['defaults'])
-
+        self.actualitzar_parametres_addicionals(defaults,settings.get("valors_defecte"))
+        self.actualitzar_parametres_addicionals(defaults,settings.get("valors_defecte"),'Resent-To')
+        
         logger.info("Parametres addicionals: %s" % str(defaults))
         return defaults
 

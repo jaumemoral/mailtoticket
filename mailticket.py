@@ -57,7 +57,7 @@ class MailTicket:
                     break
 
     def codifica(self, part):
-        if part.get("Content-Transfer-Encoding") in ['quoted-printable','base64']:
+        if part.get("Content-Transfer-Encoding") in ['quoted-printable','base64'] and part.get_content_charset() is not None:
           return part.get_payload(decode=True).decode(part.get_content_charset())
         else:
           return part.get_payload()

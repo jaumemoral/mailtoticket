@@ -234,7 +234,8 @@ class MailTicket:
             or "Return Receipt" in self.get_body() \
             or "DELIVERY FAILURE" in self.get_subject() \
             or "Informe de lectura" in self.get_subject() \
-            or "Leer informe :" in self.get_subject()
+            or "Leer informe :" in self.get_subject() \
+            or "Llegit:" in self.get_subject()            
 
     def cal_tractar(self):
         if self.comprova_mails_sempre_ticket():

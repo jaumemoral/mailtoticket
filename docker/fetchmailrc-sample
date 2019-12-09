@@ -1,0 +1,8 @@
+poll imap.upc.edu proto imap:
+
+username  "xxxxx"
+password  "yyyyy"
+folder    "inbox"
+mda       "python /mailtoticket/mailtoticket.py >/dev/null"
+ssl
+keep

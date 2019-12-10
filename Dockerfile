@@ -3,7 +3,9 @@ FROM python:3.7.5-alpine3.10
 VOLUME /log
 VOLUME /conf
 ARG USER_ID=1000
-RUN adduser --disabled-password --gecos "" --no-create-home --uid "$USER_ID" mailtoticket
+ARG GROUP_ID=1000
+RUN addgroup --gid "$GROUP_ID" "mailtoticket"
+RUN adduser --disabled-password --gecos "" --ingroup "mailtoticket" --no-create-home --uid "$USER_ID" mailtoticket
 # Instalem fetchmail
 RUN apk add fetchmail
 COPY docker/fetchmail.sh /mailtoticket/
@@ -11,7 +13,7 @@ COPY docker/fetchmail.sh /mailtoticket/
 COPY filtres /mailtoticket/filtres/
 COPY soa /mailtoticket/soa/
 COPY *.py requirements.txt /mailtoticket/
-RUN chown mailtoticket /mailtoticket/
+RUN chown mailtoticket:mailtoticket /mailtoticket/
 WORKDIR /mailtoticket
 RUN pip install -r requirements.txt
 # Aixo es perque trobi el settings on l'hem deixat

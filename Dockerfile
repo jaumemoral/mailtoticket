@@ -5,7 +5,7 @@ VOLUME /conf
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 RUN addgroup --gid "$GROUP_ID" "mailtoticket"
-RUN adduser --disabled-password --gecos "" --ingroup "mailtoticket" --no-create-home --uid "$USER_ID" mailtoticket
+RUN adduser --disabled-password --gecos "" --ingroup "mailtoticket" --no-create-home --home /mailtoticket --uid "$USER_ID" mailtoticket
 # Instalem fetchmail
 RUN apk add fetchmail
 COPY docker/fetchmail.sh /mailtoticket/

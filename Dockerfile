@@ -3,7 +3,7 @@ FROM python:3.7.5-alpine3.10
 VOLUME /log
 VOLUME /conf
 ARG USER_ID=1000
-RUN useradd -l -u ${USER_ID} -g mailtoticket
+RUN adduser --disabled-password --gecos "" --no-create-home --uid "$USER_ID"
 # Instalem fetchmail
 RUN apk add fetchmail
 COPY docker/fetchmail.sh /mailtoticket/

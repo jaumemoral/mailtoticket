@@ -8,16 +8,18 @@ RUN addgroup --gid "$GROUP_ID" "mailtoticket"
 RUN adduser --disabled-password --gecos "" --ingroup "mailtoticket" --no-create-home --home /mailtoticket --uid "$USER_ID" mailtoticket
 # Posem el timezone correcte pels logs
 RUN apk add tzdata && cp /usr/share/zoneinfo/Europe/Madrid /etc/localtime && echo "Europe/Madrid" >/etc/timezone && apk del tzdata
+# Instalem dependencies (a part de la resta de programa, perque aixi fa cache)
+WORKDIR /mailtoticket
+RUN chown mailtoticket:mailtoticket /mailtoticket/
+COPY requirements.txt /mailtoticket/
+RUN pip install -r requirements.txt
 # Instalem fetchmail
 RUN apk add fetchmail
 COPY docker/fetchmail.sh /mailtoticket/
 # Copiem el mailtoticket
 COPY filtres /mailtoticket/filtres/
 COPY soa /mailtoticket/soa/
-COPY *.py requirements.txt /mailtoticket/
-RUN chown mailtoticket:mailtoticket /mailtoticket/
-WORKDIR /mailtoticket
-RUN pip install -r requirements.txt
+COPY *.py /mailtoticket/
 # Aixo es perque trobi el settings on l'hem deixat
 ENV PYTHONPATH=/conf
 USER mailtoticket

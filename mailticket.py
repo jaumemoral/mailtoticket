@@ -103,10 +103,10 @@ class MailTicket:
             return emails
 
     def get_from(self):
-        return self.get_email_header('From')
+        return self.get_email_header('X-Original-From') or self.get_email_header('From')
 
     def get_resent_from(self):
-        return self.get_email_header('Resent-From') or self.get_email_header('X-Original-From')
+        return self.get_email_header('Resent-From')
 
     def get_reply_to(self):
         return self.get_email_header('Reply-To')

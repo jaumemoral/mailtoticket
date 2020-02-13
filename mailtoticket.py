@@ -57,9 +57,9 @@ def processar(stdin):
             "Ha petat algun dels filtres i no marco el mail com a tractat"
         )
         return estat
-    finally:
-        mail.msg['X-Mailtoticket'] = estat
+    finally:        
         if not settings.get("no_escriure_sortida"):
+            mail.msg['X-Mailtoticket'] = estat
             print(mail)
         logger.info("-----------------------------------------------------")
         if not tractat and settings.get("notificar_errors"):

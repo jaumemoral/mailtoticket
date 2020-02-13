@@ -13,9 +13,7 @@ WORKDIR /mailtoticket
 RUN chown mailtoticket:mailtoticket /mailtoticket/
 COPY requirements.txt /mailtoticket/
 RUN pip install -r requirements.txt
-# Instalem fetchmail
-RUN apk add fetchmail
-COPY docker/fetchmail.sh /mailtoticket/
+RUN pip install gunicorn
 # Copiem el mailtoticket
 COPY filtres /mailtoticket/filtres/
 COPY soa /mailtoticket/soa/
@@ -23,4 +21,4 @@ COPY *.py /mailtoticket/
 # Aixo es perque trobi el settings on l'hem deixat
 ENV PYTHONPATH=/conf
 USER mailtoticket
-CMD ["/bin/sh","/mailtoticket/fetchmail.sh"]
+CMD ["gunicorn --bind 0.0.0.0:5000 server:app"]

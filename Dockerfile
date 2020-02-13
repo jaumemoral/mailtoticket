@@ -21,4 +21,5 @@ COPY *.py /mailtoticket/
 # Aixo es perque trobi el settings on l'hem deixat
 ENV PYTHONPATH=/conf
 USER mailtoticket
-CMD ["gunicorn --bind 0.0.0.0:5000 server:app"]
+EXPOSE 5000
+CMD ["gunicorn","--bind","0.0.0.0:5000","server:app"]

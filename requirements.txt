@@ -5,3 +5,4 @@ suds-jurko
 discover
 freezegun
 requests
+flask==1.1.1

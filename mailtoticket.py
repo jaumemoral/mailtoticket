@@ -9,8 +9,6 @@ import getopt
 import logging
 from io import StringIO
 
-logger = logging.getLogger()
-
 ERROR = "ERROR"
 SUCCESS = "SUCCESS"
 SKIP = "SKIP"
@@ -21,14 +19,7 @@ UNKNOWN = "UNKNOWN"
 def codi_sortida(estat):
     return 0 if estat == SUCCESS or estat == SKIP else 1
 
-
-if __name__ == '__main__':
-    a = None
-    opts, args = getopt.getopt(sys.argv[1:], 'c:')
-    for o, a in opts:
-        if o == '-c':
-            settings.load(a)
-
+def processar(stdin):
     logging.basicConfig(
         filename=settings.get("log_file"),
         level=settings.get("log_level"),
@@ -36,18 +27,16 @@ if __name__ == '__main__':
         ' %(levelname)-8s %(message)s'
     )
 
+    logger = logging.getLogger()
     buffer_logs = StringIO()
     logger.addHandler(logging.StreamHandler(buffer_logs))
-
-    if a is not None:
-        logger.info("Fitxer de configuracio [%s]", a)
 
     estat = UNKNOWN
     tractat = False
     try:
         logger.info("-----------------------------------------------------")
         logger.info("Llegeixo mail")
-        mail = MailTicket(sys.stdin.buffer)
+        mail = MailTicket(stdin)
         logger.info("Mail de %s llegit amb ID %s"
                     % (mail.get_from(), mail.get_header('message-id')))
         if mail.cal_tractar():
@@ -62,11 +51,12 @@ if __name__ == '__main__':
         else:
             estat = SKIP
             logger.info("No cal tractar el mail %s" % mail.get_subject_ascii())
-    except Exception as e:
+    except Exception:
         estat = ERROR
         logger.exception(
             "Ha petat algun dels filtres i no marco el mail com a tractat"
         )
+        return estat
     finally:
         mail.msg['X-Mailtoticket'] = estat
         if not settings.get("no_escriure_sortida"):
@@ -74,5 +64,17 @@ if __name__ == '__main__':
         logger.info("-----------------------------------------------------")
         if not tractat and settings.get("notificar_errors"):
             correu.enviar(buffer_logs.getvalue(), mail.msg)
+    return estat
 
-        sys.exit(codi_sortida(estat))
+if __name__ == '__main__':
+    a = None
+    opts, args = getopt.getopt(sys.argv[1:], 'c:')
+    for o, a in opts:
+        if o == '-c':
+            settings.load(a)
+
+    if a is not None:
+        logger.info("Fitxer de configuracio [%s]", a)
+
+    estat=processar(sys.stdin.buffer)
+    sys.exit(codi_sortida(estat))

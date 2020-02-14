@@ -17,11 +17,12 @@ RUN pip install gunicorn
 # Copiem el mailtoticket
 COPY filtres /mailtoticket/filtres/
 COPY soa /mailtoticket/soa/
+COPY img /mailtoticket/img/
 COPY *.py /mailtoticket/
 # Aixo es perque trobi el settings on l'hem deixat
 ENV PYTHONPATH=/conf
 USER mailtoticket
 EXPOSE 5000
-#CMD ["gunicorn","--bind","0.0.0.0:5000","server:app"]
-ENV FLASK_APP=server.py
-CMD ["flask","run","--host=0.0.0.0"]
+CMD ["gunicorn","--bind","0.0.0.0:5000","server:app"]
+#ENV FLASK_APP=server.py
+#CMD ["flask","run","--host=0.0.0.0"]

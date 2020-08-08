@@ -65,5 +65,6 @@ class TestMailTicket(unittest.TestCase):
         mail_auto = llegir_mail("mailauto.txt")
         self.assertTrue(mail_auto.comprova_mails_sempre_ticket())
 
+
 if __name__ == '__main__':
     unittest.main()

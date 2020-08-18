@@ -5,7 +5,7 @@ import hashlib
 import base64
 import re
 from email.header import decode_header, make_header
-from email.utils import parseaddr
+from email.utils import parseaddr, getaddresses
 from email.utils import parsedate_tz, mktime_tz
 import datetime
 import settings
@@ -90,12 +90,17 @@ class MailTicket:
         else:
             return self.msg[header]
 
-    def get_email_header(self, header):
-        email = parseaddr(self.msg[header])[1]
-        if len(email) == 0:
-            return None
+    def get_email_header_multiple(self, header):
+        tuples = getaddresses(self.msg.get_all(header,[]))
+        emails= [t[1].lower() for t in tuples if len(t[1])>0]
+        return emails
 
-        return email.lower()
+    def get_email_header(self, header):
+        emails=self.get_email_header_multiple(header)
+        if len(emails) == 0:
+            return None
+        else:
+            return ','.join(emails)
 
     def get_from(self):
         return self.get_email_header('From')

@@ -3,6 +3,6 @@ poll imap.upc.edu proto imap:
 username  "xxxxx"
 password  "yyyyy"
 folder    "inbox"
-mda       "python /mailtoticket/mailtoticket.py >/dev/null"
+mda       "/bin/sh /mailtoticket/mailtoticket.sh"
 ssl
 keep

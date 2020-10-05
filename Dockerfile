@@ -16,6 +16,7 @@ RUN pip install -r requirements.txt
 # Instalem fetchmail
 RUN apk add fetchmail
 COPY docker/fetchmail.sh /mailtoticket/
+COPY docker/mailtoticket.sh /mailtoticket/
 # Copiem el mailtoticket
 COPY filtres /mailtoticket/filtres/
 COPY soa /mailtoticket/soa/

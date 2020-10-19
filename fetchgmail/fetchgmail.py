@@ -14,7 +14,6 @@ def escriure_mail(mail):
         f.flush()
 
 def refresca_i_guarda_token():
-    print (settings.client_id, settings.client_secret,settings.refresh_token)
     creds=oauth2.RefreshToken(settings.client_id, settings.client_secret,settings.refresh_token)
     creds["expiration_time"]=datetime.datetime.now()+datetime.timedelta(seconds=creds["expires_in"])
     with open('token.pickle', 'wb') as token:

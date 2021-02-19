@@ -13,15 +13,14 @@ WORKDIR /mailtoticket
 RUN chown mailtoticket:mailtoticket /mailtoticket/
 COPY requirements.txt /mailtoticket/
 RUN pip install -r requirements.txt
-# Instalem fetchmail
-RUN apk add fetchmail
-COPY docker/fetchmail.sh /mailtoticket/
-COPY docker/mailtoticket.sh /mailtoticket/
+# Copiem els scripts de fetchgmail
+COPY fetchgmail /mailtoticket/fetchgmail/
 # Copiem el mailtoticket
+COPY docker/mailtoticket.sh /mailtoticket/
 COPY filtres /mailtoticket/filtres/
 COPY soa /mailtoticket/soa/
 COPY *.py /mailtoticket/
 # Aixo es perque trobi el settings on l'hem deixat
 ENV PYTHONPATH=/conf
 USER mailtoticket
-CMD ["/bin/sh","/mailtoticket/fetchmail.sh"]
+CMD ["/bin/sh","/mailtoticket/fetchgmail/fetchgmail.sh"]

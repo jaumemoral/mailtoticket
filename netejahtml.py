@@ -116,6 +116,11 @@ def treure_blockquote(html):
     tags = soup.select('body > div.gmail_quote')
     if len(tags) == 1:
         tags[0].decompose()
+        
+    # gmail amb un div que engloba tot el missatge
+    tags = soup.select('body > div > div.gmail_quote')
+    if len(tags) == 1:
+        tags[0].decompose()
 
     # Client mail android
     tags = soup.select('body > div.quote')

@@ -1,10 +1,11 @@
 import imaplib
-import oauth2
 import settings_fetchgmail as settings
 import os
 import subprocess
 import pickle
-import datetime
+import base64
+from google.auth.transport.requests import Request
+
 
 MAIL_TMP="/tmp/mail"
 
@@ -13,24 +14,41 @@ def escriure_mail(mail):
         f.write(mail)
         f.flush()
 
-def refresca_i_guarda_token():
-    creds=oauth2.RefreshToken(settings.client_id, settings.client_secret,settings.refresh_token)
-    creds["expiration_time"]=datetime.datetime.now()+datetime.timedelta(seconds=creds["expires_in"])
-    with open('token.pickle', 'wb') as token:
-        pickle.dump(creds, token)
+def llegir_token():
+    with open(settings.token_file, 'rb') as token:
+        creds = pickle.load(token)
+    if creds.expired and creds.refresh_token:
+        creds.refresh(Request())
+        with open(settings.token_file, 'wb') as token:
+            pickle.dump(creds, token)
     return creds
 
-def llegir_token():
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-        if creds["expiration_time"]>datetime.datetime.now():
-            return creds
-    return refresca_i_guarda_token()
+def generate_oauth2_string(username, access_token, base64_encode=True):
+  """Generates an IMAP OAuth2 authentication string.
+
+  See https://developers.google.com/google-apps/gmail/oauth2_overview
+
+  Args:
+    username: the username (email address) of the account to authenticate
+    access_token: An OAuth2 access token.
+    base64_encode: Whether to base64-encode the output.
+
+  Returns:
+    The SASL argument for the OAuth2 mechanism.
+  """
+  auth_string = 'user=%s\1auth=Bearer %s\1\1' % (username, access_token)
+  if base64_encode:
+    auth_string = base64.b64encode(auth_string)
+  return auth_string
+
+
+if not os.path.exists(settings.token_file):
+    print("No tinc el token.pickle creat. Executa el oauth2.sh")
+    exit(0)
 
 creds = llegir_token()
-access_token=creds['access_token']
-auth_string=oauth2.GenerateOAuth2String(settings.user, access_token,base64_encode=False)
+access_token=creds.token
+auth_string=generate_oauth2_string(settings.user, access_token,base64_encode=False)
 imap_conn = imaplib.IMAP4_SSL('imap.gmail.com')
 imap_conn.authenticate('XOAUTH2', lambda x: auth_string)
 imap_conn.select('INBOX')

@@ -13,8 +13,9 @@ WORKDIR /mailtoticket
 RUN chown mailtoticket:mailtoticket /mailtoticket/
 COPY requirements.txt /mailtoticket/
 RUN pip install -r requirements.txt
-# Copiem els scripts de fetchgmail
+# Copiem els scripts de fetchgmail i instalem les seves dependencies
 COPY fetchgmail /mailtoticket/fetchgmail/
+RUN pip install -r fetchgmail/requirements.txt
 # Copiem el mailtoticket
 COPY docker/mailtoticket.sh /mailtoticket/
 COPY filtres /mailtoticket/filtres/

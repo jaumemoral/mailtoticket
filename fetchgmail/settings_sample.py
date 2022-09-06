@@ -1,6 +1,4 @@
 user="xxx@upc.edu"
-client_id="xxxxxx"
-client_secret="yyyyyy"
-# El refresh token s'obté executant oauth2.sh
-refresh_token="zzzzzzzz"
 mailtoticket=["sh","mailtoticket.sh"]
+credentials_file='./credentials.json'
+token_file='./token.pickle'

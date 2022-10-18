@@ -1,6 +1,13 @@
 from soa.service import SOAService
 import settings
 
+def excepcions_com_a_codi_retorn(func):
+    def wrapper():
+        try:
+            return func()
+        except:
+            return {'codiRetorn':-1}
+    return wrapper
 
 class GestioTiquets(SOAService):
 
@@ -75,6 +82,7 @@ class GestioTiquets(SOAService):
         resultat = self.consulta_tiquets_dades(codi=codi)
         return resultat[0]
 
+    @excepcions_com_a_codi_retorn
     def afegir_comentari_tiquet(self, **kwargs):
         resultat = self.client.service.AfegirComentariTiquet(
             username=self.username_gn6,
@@ -84,6 +92,7 @@ class GestioTiquets(SOAService):
         )
         return resultat
 
+    @excepcions_com_a_codi_retorn
     def alta_tiquet(
         self,
         solicitant,
@@ -147,6 +156,7 @@ class GestioTiquets(SOAService):
         )
         return resultat['codiAnnex']
 
+    @excepcions_com_a_codi_retorn
     def modificar_tiquet(
         self,
         codiTiquet,
@@ -205,6 +215,7 @@ class GestioTiquets(SOAService):
         )
         return resultat
 
+    @excepcions_com_a_codi_retorn
     def afegir_solicitant_tiquet(
         self,
         codiTiquet,

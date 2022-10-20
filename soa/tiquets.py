@@ -2,10 +2,10 @@ from soa.service import SOAService
 import settings
 
 def excepcions_com_a_codi_retorn(func):
-    def wrapper():
+    def wrapper(*args, **kwargs):
         try:
-            return func()
-        except:
+            return func(*args, **kwargs)
+        except Exception as e:
             return {'codiRetorn':-1}
     return wrapper
 

@@ -37,6 +37,12 @@ class FiltreReply(Filtre):
         if ticket_id is not None:
             return ticket_id
         ticket_id = self.buscar_ticket_id(
+            self.msg.get_header("References"),
+            self.regex_message_id
+        )
+        if ticket_id is not None:
+            return ticket_id
+        ticket_id = self.buscar_ticket_id(
             self.msg.get_subject(),
             settings.get("regex_reply")
         )

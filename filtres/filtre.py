@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import re
+import settings
 
 import logging
 logger = logging.getLogger(__name__)
@@ -12,6 +14,9 @@ class Filtre(object):
         self.msg = msg
         self.tickets = tickets
         self.identitat = identitat
+        self.regex_message_id = settings.get(
+            "regex_message_id") or "^<[-a-f0-9]+-tiquet-id-([0-9]+)@gn6>$"
+
 
     def set_mail(self, msg):
         self.msg = msg
@@ -109,3 +114,34 @@ class Filtre(object):
 
     def url_attachment(self, id_attachment):
         return "/tiquetsusuaris/control/file?fileId=%s" % id_attachment
+
+    def buscar_ticket_id(self, string, regex):
+        try:
+            logger.info("Buscant numero a  %s" % string)
+            p = re.compile(regex, re.UNICODE)
+            m = p.match(string)
+            ticket_id = m.group(1)
+            logger.info("Trobat ticket %s" % ticket_id)
+            return ticket_id
+        except Exception as e:
+            return None
+
+    def obtenir_ticket_id(self):
+        ticket_id = self.buscar_ticket_id(
+            self.msg.get_header("In-Reply-To"),
+            self.regex_message_id
+        )
+        if ticket_id is not None:
+            return ticket_id
+        ticket_id = self.buscar_ticket_id(
+            self.msg.get_header("References"),
+            self.regex_message_id
+        )
+        if ticket_id is not None:
+            return ticket_id
+        ticket_id = self.buscar_ticket_id(
+            self.msg.get_subject(),
+            settings.get("regex_reply")
+        )
+        return ticket_id
+

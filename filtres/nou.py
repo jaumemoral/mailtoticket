@@ -25,6 +25,12 @@ class FiltreNou(Filtre):
     def cal_afegir_solicitants_addicionals(self):
         return "+cc" in self.msg.get_to() 
 
+    def copia_equip_si_es_resposta_a_ticket_antic(self,parametres):
+        ticket_id = self.obtenir_ticket_id()
+        if ticket_id:
+            ticket=self.tickets.consulta_tiquet(codi=self.ticket_id)
+            parametres["equipResolutor"]=ticket['equipResolutor']
+
     def actualitzar_parametres_addicionals(self,parametres_addicionals,valors_defecte,header_a_mirar=None):
         for item in valors_defecte:
             regex = re.compile(item['match'], re.IGNORECASE)
@@ -46,6 +52,7 @@ class FiltreNou(Filtre):
                     "equipResolutor": settings.get("equip_resolutor_nous"),
                     "enviarMissatgeCreacio": self.enviar_missatge_creacio
                     }
+        self.copia_equip_si_es_resposta_a_ticket_antic(defaults)
         self.actualitzar_parametres_addicionals(defaults,settings.get("valors_defecte"))
         self.actualitzar_parametres_addicionals(defaults,settings.get("valors_defecte"),'Resent-To')
         

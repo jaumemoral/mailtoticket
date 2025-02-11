@@ -28,7 +28,7 @@ class FiltreNou(Filtre):
     def copia_equip_si_es_resposta_a_ticket_antic(self,parametres):
         ticket_id = self.obtenir_ticket_id()
         if ticket_id:
-            ticket=self.tickets.consulta_tiquet(codi=self.ticket_id)
+            ticket=self.tickets.consulta_tiquet(codi=ticket_id)
             parametres["equipResolutor"]=ticket['equipResolutor']
 
     def actualitzar_parametres_addicionals(self,parametres_addicionals,valors_defecte,header_a_mirar=None):

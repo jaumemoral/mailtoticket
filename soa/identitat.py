@@ -38,6 +38,13 @@ class GestioIdentitat:
 
         return uid
 
+    def comprova_alta(self,dades_persona):
+        return 'ALTA' in [x['estatsPerfil'] for x in dades_persona['uePerfil']]
+
+    def obtenir_dades_persona(self,cn):
+        return requests.get(self.url+"/externs/persones/"+cn+"/cn",
+                            headers={'TOKEN':self.token}).json()
+    
     def obtenir_uid_remot(self, mail):
         try:
             # Pot ser que un usuari d'un departament no tingui a identitat
@@ -46,9 +53,8 @@ class GestioIdentitat:
             if "@upc.edu" in mail:
               try:
                 cn = mail.split("@")[0]
-                dades_persona=requests.get(self.url+"/externs/identitats?cn="+cn,
-                               headers={'TOKEN':self.token}).json()
-                return cn
+                dades_persona=self.obtenir_dades_persona(cn)
+                if self.comprova_alta(dades_persona): return cn
               except:
                 None
 
@@ -58,7 +64,8 @@ class GestioIdentitat:
                                headers={'TOKEN':self.token}).json()
             if len(cns) == 1:
                 # Quan tenim un resultat, es aquest
-                return cns[0]
+                dades_persona=self.obtenir_dades_persona(cns[0])
+                if self.comprova_alta(dades_persona): return cns[0]
             else:
                 # Si tenim mes d'un, busquem el que te el mail que busquem
                 # com a preferent o be retornem el primer
@@ -67,6 +74,7 @@ class GestioIdentitat:
                       dades_persona=requests.get(self.url+"/externs/persones/"+cn+"/cn",
                                  headers={'TOKEN':self.token}).json()
                       if (self.canonicalitzar_mail(dades_persona['emailPreferent']) == mail):
+                        if self.comprova_alta(dades_persona):
                             return dades_persona['commonName']
                     except:
                       None

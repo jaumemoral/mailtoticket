@@ -39,10 +39,15 @@ class GestioIdentitat:
         return uid
 
     def comprova_alta(self,dades_persona):
+        if not dades_persona: return False
         return 'ALTA' in [x['estatsPerfil'] for x in dades_persona['uePerfil']]
 
     def obtenir_dades_persona(self,cn):
-        return requests.get(self.url+"/externs/persones/"+cn+"/cn",
+        result=requests.get(self.url+"/externs/persones/"+cn+"/cn",
+                            headers={'TOKEN':self.token})
+        if result.status_code == 200: return result.json()
+        # Provem que no sigui un generic
+        return requests.get(self.url+"/externs/generics/"+cn+"/cn",
                             headers={'TOKEN':self.token}).json()
     
     def obtenir_uid_remot(self, mail):

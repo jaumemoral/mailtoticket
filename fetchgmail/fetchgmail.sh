@@ -1,6 +1,6 @@
 #!/bin/sh
 while true; do 
-    python /mailtoticket/fetchgmail/fetchgmail.py 2>&1 > /tmp/mailtoticket.log
+    python /mailtoticket/fetchgmail/fetchgmail.py 2>&1 > /log/mailtoticket.log
     STATUS=$?
     if [ "x$HEARTBEAT_URL" != "x" ]; then
         if [ "x$STATUS" == "x0" ]; then
